@@ -1,0 +1,17 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "src": "src/pages/Index.tsx"
+    }
+  ],
+  "components": [
+    {"name": "HeroSection", "src": "src/components/HeroSection.tsx"},
+    {"name": "TimelineSection", "src": "src/components/TimelineSection.tsx"},
+    {"name": "TeamSection", "src": "src/components/TeamSection.tsx"},
+    {"name": "TeamCard", "src": "src/components/TeamCard.tsx"},
+    {"name": "SignupSection", "src": "src/components/SignupSection.tsx"},
+    {"name": "SignupForm", "src": "src/components/SignupForm.tsx"},
+    {"name": "StatsBar", "src": "src/components/StatsBar.tsx"}
+  ]
+}

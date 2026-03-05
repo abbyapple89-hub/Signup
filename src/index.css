@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Arco Design theme color override: #4080FF = rgb(64, 128, 255) */
+body {
+  --primary-1: 64, 128, 255;
+  --primary-2: 64, 128, 255;
+  --primary-3: 64, 128, 255;
+  --primary-4: 64, 128, 255;
+  --primary-5: 64, 128, 255;
+  --primary-6: 64, 128, 255;
+  --primary-7: 43, 102, 224;
+  --color-primary-light-1: rgb(238, 244, 255);
+  --color-primary-light-2: rgb(214, 230, 255);
+  --color-primary-light-3: rgb(173, 200, 255);
+  --color-primary-light-4: rgb(132, 170, 255);
+  --color-primary: rgb(64, 128, 255);
+  --color-primary-hover: rgb(43, 102, 224);
+  --color-primary-active: rgb(26, 77, 191);
+  font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #4080FF;
+  border-radius: 3px;
+}
+
+/* Arco Design button primary override */
+.arco-btn-primary {
+  background-color: #4080FF !important;
+  border-color: #4080FF !important;
+}
+.arco-btn-primary:hover {
+  background-color: #2B66E0 !important;
+  border-color: #2B66E0 !important;
+}
