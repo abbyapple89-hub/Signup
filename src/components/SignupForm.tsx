@@ -3,7 +3,7 @@ import { User, Hash, Phone, ChevronDown, Send, CheckCircle } from "lucide-react"
 import { Registration } from "@/pages/Index";
 
 interface SignupFormProps {
-  onRegister?: (reg: Registration) => void;
+  onRegister?: (reg: Omit<Registration, "id" | "timestamp">) => Promise<void>;
 }
 
 const TEAMS = [
@@ -16,15 +16,15 @@ const TEAMS = [
 ];
 
 const TEAM_COLORS: Record<string, string> = {
-  "报名与人员管理组": "#4080FF",
-  "场地与入场管理组": "#7c3aed",
-  "主持与流程设计组": "#f59e0b",
-  "比赛与技术组": "#10b981",
-  "评分与颁奖组": "#ef4444",
-  "宣传与记录组": "#ec4899",
+  报名与人员管理组: "#4080FF",
+  场地与入场管理组: "#7c3aed",
+  主持与流程设计组: "#f59e0b",
+  比赛与技术组: "#10b981",
+  评分与颁奖组: "#ef4444",
+  宣传与记录组: "#ec4899",
 };
 
-const SignupForm: React.FC<SignupFormProps> = ({ onRegister = () => {} }) => {
+const SignupForm: React.FC<SignupFormProps> = ({ onRegister = async () => {} }) => {
   const [form, setForm] = useState({
     name: "",
     studentId: "",
@@ -33,6 +33,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegister = () => {} }) => {
     reason: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validate = () => {
@@ -45,37 +46,38 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegister = () => {} }) => {
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submit attempted:", form);
-
     const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      console.log("Validation failed:", newErrors);
       return;
     }
 
-    const registration: Registration = {
-      id: Date.now().toString(),
+    const registration: Omit<Registration, "id" | "timestamp"> = {
       name: form.name.trim(),
       studentId: form.studentId.trim(),
       phone: form.phone.trim(),
       team: form.team,
       reason: form.reason.trim(),
-      timestamp: new Date().toISOString(),
     };
 
-    onRegister(registration);
-    setSubmitted(true);
-    console.log("Registration successful:", registration);
+    setIsSubmitting(true);
+    try {
+      await onRegister(registration);
+      setSubmitted(true);
+      setErrors({});
+    } catch (error) {
+      console.error("Registration failed:", error);
+      setErrors((prev) => ({ ...prev, submit: "提交失败，请稍后重试" }));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
-    }
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   if (submitted) {
@@ -87,11 +89,11 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegister = () => {} }) => {
         >
           <CheckCircle size={44} className="text-white" />
         </div>
-        <h3 className="text-3xl font-black text-gray-900 mb-3">报名成功！🎉</h3>
+        <h3 className="text-3xl font-black text-gray-900 mb-3">报名成功</h3>
         <p className="text-gray-500 text-lg mb-2">
           欢迎加入 <span className="font-bold" style={{ color: TEAM_COLORS[form.team] }}>{form.team}</span>
         </p>
-        <p className="text-gray-400 text-sm mb-8">我们会尽快与你联系，期待与你共同打造精彩活动！</p>
+        <p className="text-gray-400 text-sm mb-8">我们会尽快与你联系，期待一起完成活动。</p>
         <button
           onClick={() => {
             setSubmitted(false);
@@ -106,8 +108,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegister = () => {} }) => {
     );
   }
 
-  const inputBase =
-    "w-full px-4 py-3 rounded-xl border text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 transition-all";
+  const inputBase = "w-full px-4 py-3 rounded-xl border text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 transition-all";
   const inputNormal = `${inputBase} border-gray-200 focus:border-blue-400 focus:ring-blue-100`;
   const inputError = `${inputBase} border-red-300 focus:border-red-400 focus:ring-red-100`;
 
@@ -115,11 +116,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegister = () => {} }) => {
     <div data-cmp="SignupForm">
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid grid-cols-2 gap-4">
-          {/* Name */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-              姓名 <span className="text-red-400">*</span>
-            </label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">姓名 <span className="text-red-400">*</span></label>
             <div className="relative">
               <User size={16} className="absolute left-3 top-3.5 text-gray-400" />
               <input
@@ -133,11 +131,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegister = () => {} }) => {
             {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
           </div>
 
-          {/* Student ID */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-              学号 <span className="text-red-400">*</span>
-            </label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">学号 <span className="text-red-400">*</span></label>
             <div className="relative">
               <Hash size={16} className="absolute left-3 top-3.5 text-gray-400" />
               <input
@@ -152,11 +147,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegister = () => {} }) => {
           </div>
         </div>
 
-        {/* Phone */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-            联系方式 <span className="text-red-400">*</span>
-          </label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">联系方式 <span className="text-red-400">*</span></label>
           <div className="relative">
             <Phone size={16} className="absolute left-3 top-3.5 text-gray-400" />
             <input
@@ -170,11 +162,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegister = () => {} }) => {
           {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone}</p>}
         </div>
 
-        {/* Team selection */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-            报名工作组 <span className="text-red-400">*</span>
-          </label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">报名工作组<span className="text-red-400">*</span></label>
           <div className="relative">
             <ChevronDown size={16} className="absolute right-3 top-3.5 text-gray-400 pointer-events-none" />
             <select
@@ -192,23 +181,17 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegister = () => {} }) => {
           {form.team && (
             <div
               className="mt-2 text-xs px-3 py-1.5 rounded-lg font-medium w-fit"
-              style={{
-                background: `${TEAM_COLORS[form.team]}15`,
-                color: TEAM_COLORS[form.team],
-              }}
+              style={{ background: `${TEAM_COLORS[form.team]}15`, color: TEAM_COLORS[form.team] }}
             >
-              已选择：{form.team}
+              已选择: {form.team}
             </div>
           )}
         </div>
 
-        {/* Reason */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-            报名理由 <span className="text-red-400">*</span>
-          </label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">报名理由 <span className="text-red-400">*</span></label>
           <textarea
-            placeholder="简单介绍一下你为什么想加入这个工作组，或者你有哪些相关经验..."
+            placeholder="简单介绍一下你为什么想加入这个工作组，或你有哪些相关经验"
             value={form.reason}
             onChange={(e) => handleChange("reason", e.target.value)}
             rows={4}
@@ -217,15 +200,16 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegister = () => {} }) => {
           {errors.reason && <p className="text-red-400 text-xs mt-1">{errors.reason}</p>}
         </div>
 
-        {/* Submit */}
         <button
           type="submit"
-          className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl text-white font-bold text-lg shadow-xl hover:opacity-90 hover:shadow-2xl transition-all hover:scale-[1.01]"
+          disabled={isSubmitting}
+          className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl text-white font-bold text-lg shadow-xl hover:opacity-90 hover:shadow-2xl transition-all hover:scale-[1.01] disabled:opacity-70 disabled:cursor-not-allowed"
           style={{ background: "linear-gradient(135deg, #4080FF, #7c3aed)" }}
         >
           <Send size={20} />
-          确认报名
+          {isSubmitting ? "提交中..." : "确认报名"}
         </button>
+        {errors.submit && <p className="text-red-400 text-xs mt-1 text-center">{errors.submit}</p>}
       </form>
     </div>
   );

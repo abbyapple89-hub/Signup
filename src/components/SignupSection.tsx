@@ -4,12 +4,12 @@ import { Registration } from "@/pages/Index";
 import { Clock, User, Star } from "lucide-react";
 
 interface SignupSectionProps {
-  onRegister?: (reg: Registration) => void;
+  onRegister?: (reg: Omit<Registration, "id" | "timestamp">) => Promise<void>;
   registrations?: Registration[];
 }
 
 const SignupSection: React.FC<SignupSectionProps> = ({
-  onRegister = () => {},
+  onRegister = async () => {},
   registrations = [],
 }) => {
   console.log("SignupSection rendered, registrations:", registrations.length);

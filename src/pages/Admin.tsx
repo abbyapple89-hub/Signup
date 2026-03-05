@@ -1,49 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Registration } from "@/pages/Index";
-
-const REGISTRATION_STORAGE_KEY = "ppt_registration_records_v1";
+import { clearRegistrations, fetchRegistrations } from "@/lib/registrations";
 
 const Admin: React.FC = () => {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const loadRegistrations = () => {
+  const loadRegistrations = async () => {
+    setLoading(true);
     try {
-      const raw = localStorage.getItem(REGISTRATION_STORAGE_KEY);
-      if (!raw) {
-        setRegistrations([]);
-        return;
-      }
-      const parsed = JSON.parse(raw);
-      setRegistrations(Array.isArray(parsed) ? parsed : []);
+      const rows = await fetchRegistrations();
+      setRegistrations(rows);
     } catch (error) {
       console.error("Failed to load registrations:", error);
-      setRegistrations([]);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadRegistrations();
-
-    const onStorage = (event: StorageEvent) => {
-      if (event.key === REGISTRATION_STORAGE_KEY) {
-        loadRegistrations();
-      }
-    };
-
-    window.addEventListener("storage", onStorage);
-    const timer = window.setInterval(loadRegistrations, 1500);
-
-    return () => {
-      window.removeEventListener("storage", onStorage);
-      window.clearInterval(timer);
-    };
+    void loadRegistrations();
   }, []);
 
-  const clearAll = () => {
+  const clearAll = async () => {
     if (!window.confirm("确认清空所有报名记录吗？")) return;
-    localStorage.removeItem(REGISTRATION_STORAGE_KEY);
-    setRegistrations([]);
+    try {
+      await clearRegistrations();
+      setRegistrations([]);
+    } catch (error) {
+      console.error("Failed to clear registrations:", error);
+    }
   };
 
   return (
@@ -56,13 +43,13 @@ const Admin: React.FC = () => {
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={loadRegistrations}
+              onClick={() => void loadRegistrations()}
               className="px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-100"
             >
               刷新
             </button>
             <button
-              onClick={clearAll}
+              onClick={() => void clearAll()}
               className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
             >
               清空记录
@@ -94,18 +81,17 @@ const Admin: React.FC = () => {
                     <td className="px-4 py-3 text-gray-700">{reg.phone}</td>
                     <td className="px-4 py-3 text-gray-700">{reg.team}</td>
                     <td className="px-4 py-3 text-gray-700 max-w-md">{reg.reason}</td>
-                    <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
-                      {new Date(reg.timestamp).toLocaleString()}
-                    </td>
+                    <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{new Date(reg.timestamp).toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
 
-          {registrations.length === 0 && (
+          {!loading && registrations.length === 0 && (
             <div className="text-center text-gray-500 py-12">暂无报名记录</div>
           )}
+          {loading && <div className="text-center text-gray-500 py-12">加载中...</div>}
         </div>
       </div>
     </div>

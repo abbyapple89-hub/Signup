@@ -4,8 +4,7 @@ import TimelineSection from "@/components/TimelineSection";
 import TeamSection from "@/components/TeamSection";
 import SignupSection from "@/components/SignupSection";
 import StatsBar from "@/components/StatsBar";
-
-const REGISTRATION_STORAGE_KEY = "ppt_registration_records_v1";
+import { createRegistration, fetchRegistrations } from "@/lib/registrations";
 
 export interface Registration {
   id: string;
@@ -19,26 +18,26 @@ export interface Registration {
 
 const Index: React.FC = () => {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(REGISTRATION_STORAGE_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        setRegistrations(parsed);
+    const load = async () => {
+      setLoading(true);
+      try {
+        const rows = await fetchRegistrations();
+        setRegistrations(rows);
+      } catch (error) {
+        console.error("Failed to load registrations:", error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Failed to load registrations:", error);
-    }
+    };
+    void load();
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem(REGISTRATION_STORAGE_KEY, JSON.stringify(registrations));
-  }, [registrations]);
-
-  const handleNewRegistration = (reg: Registration) => {
-    setRegistrations((prev) => [reg, ...prev]);
+  const handleNewRegistration = async (reg: Omit<Registration, "id" | "timestamp">) => {
+    const saved = await createRegistration(reg);
+    setRegistrations((prev) => [saved, ...prev]);
   };
 
   const teamCounts = registrations.reduce<Record<string, number>>((acc, reg) => {
@@ -53,6 +52,7 @@ const Index: React.FC = () => {
       <TimelineSection />
       <TeamSection teamCounts={teamCounts} />
       <SignupSection onRegister={handleNewRegistration} registrations={registrations} />
+      {loading && <div className="text-center text-sm text-gray-500 py-4">Loading registrations...</div>}
 
       <footer className="bg-gray-900 text-gray-400 text-center py-8 text-sm">
         <p className="text-lg font-bold text-white mb-2">胡说八道 PPT 演讲大赛</p>
