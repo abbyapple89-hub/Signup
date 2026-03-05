@@ -1,5 +1,5 @@
 import React from "react";
-import { Mic, Users, Calendar, MapPin } from "lucide-react";
+import { Users, Calendar, MapPin } from "lucide-react";
 import heroStage from "@/assets/images/hero-stage.svg";
 
 interface HeroSectionProps {
@@ -39,12 +39,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ totalCount = 0 }) => {
         className="absolute right-8 bottom-6 w-64 lg:w-80 opacity-90 pointer-events-none select-none"
       />
 
-      {/* Floating decorative elements */}
-      <div className="absolute top-20 left-20 text-5xl opacity-20 animate-pulse">🎤</div>
-      <div className="absolute top-32 right-32 text-4xl opacity-20 animate-pulse" style={{ animationDelay: "0.5s" }}>📊</div>
-      <div className="absolute bottom-24 left-40 text-3xl opacity-20 animate-pulse" style={{ animationDelay: "1s" }}>🏆</div>
-      <div className="absolute bottom-16 right-60 text-4xl opacity-20 animate-pulse" style={{ animationDelay: "1.5s" }}>📸</div>
-
       <div className="relative z-10 max-w-5xl mx-auto px-8 py-20 text-center">
         {/* Badge */}
         <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2 mb-8">
@@ -71,22 +65,22 @@ const HeroSection: React.FC<HeroSectionProps> = ({ totalCount = 0 }) => {
         <p className="text-white/70 text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
           工作组 & 工作人员 招募报名
           <br />
-          <span className="text-white/50 text-base">加入我们，共同打造一场精彩绝伦的演讲盛会！</span>
+          <span className="text-white/50 text-base">胡说八道，需要你！</span>
         </p>
 
         {/* Info cards */}
         <div className="flex justify-center gap-6 mb-12 flex-wrap">
           <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-5 py-3 text-white/90">
             <Calendar size={18} className="text-blue-300" />
-            <span className="text-sm">活动即将举办</span>
+            <span className="text-sm">3.13 1:00-4:00</span>
           </div>
           <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-5 py-3 text-white/90">
             <MapPin size={18} className="text-purple-300" />
-            <span className="text-sm">线下精彩呈现</span>
+            <span className="text-sm">北1-110</span>
           </div>
           <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-5 py-3 text-white/90">
             <Users size={18} className="text-pink-300" />
-            <span className="text-sm">共招募 20 名工作人员</span>
+            <span className="text-sm">共招募 25 名工作人员</span>
           </div>
         </div>
 
@@ -97,14 +91,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ totalCount = 0 }) => {
             className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-white font-bold text-lg shadow-xl transition-all hover:scale-105 hover:shadow-2xl"
             style={{ background: "linear-gradient(135deg, #4080FF, #7c3aed)" }}
           >
-            <Mic size={20} />
             立即报名加入
           </a>
           <a
             href="#teams"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-white/90 font-bold text-lg border border-white/30 hover:bg-white/10 transition-all"
           >
-            了解工作组
+            工作组详情介绍
           </a>
         </div>
 

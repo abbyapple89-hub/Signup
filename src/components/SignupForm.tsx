@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { User, Hash, Phone, ChevronDown, Send, CheckCircle } from "lucide-react";
+import { User, Phone, ChevronDown, Send, CheckCircle } from "lucide-react";
 import { Registration } from "@/pages/Index";
 
 interface SignupFormProps {
@@ -27,7 +27,6 @@ const TEAM_COLORS: Record<string, string> = {
 const SignupForm: React.FC<SignupFormProps> = ({ onRegister = async () => {} }) => {
   const [form, setForm] = useState({
     name: "",
-    studentId: "",
     phone: "",
     team: "",
     reason: "",
@@ -38,8 +37,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegister = async () => {} }) 
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!form.name.trim()) newErrors.name = "请输入姓名";
-    if (!form.studentId.trim()) newErrors.studentId = "请输入学号";
+    if (!form.name.trim()) newErrors.name = "请输入昵称";
     if (!form.phone.trim()) newErrors.phone = "请输入联系方式";
     if (!form.team) newErrors.team = "请选择工作组";
     if (!form.reason.trim()) newErrors.reason = "请填写报名理由";
@@ -56,7 +54,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegister = async () => {} }) 
 
     const registration: Omit<Registration, "id" | "timestamp"> = {
       name: form.name.trim(),
-      studentId: form.studentId.trim(),
+      studentId: "",
       phone: form.phone.trim(),
       team: form.team,
       reason: form.reason.trim(),
@@ -97,7 +95,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegister = async () => {} }) 
         <button
           onClick={() => {
             setSubmitted(false);
-            setForm({ name: "", studentId: "", phone: "", team: "", reason: "" });
+            setForm({ name: "", phone: "", team: "", reason: "" });
           }}
           className="px-6 py-3 rounded-xl text-white font-semibold transition-all hover:opacity-90"
           style={{ background: "linear-gradient(135deg, #4080FF, #7c3aed)" }}
@@ -115,36 +113,19 @@ const SignupForm: React.FC<SignupFormProps> = ({ onRegister = async () => {} }) 
   return (
     <div data-cmp="SignupForm">
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">姓名 <span className="text-red-400">*</span></label>
-            <div className="relative">
-              <User size={16} className="absolute left-3 top-3.5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="请输入你的姓名"
-                value={form.name}
-                onChange={(e) => handleChange("name", e.target.value)}
-                className={`${errors.name ? inputError : inputNormal} pl-9`}
-              />
-            </div>
-            {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">昵称（可以不是真名） <span className="text-red-400">*</span></label>
+          <div className="relative">
+            <User size={16} className="absolute left-3 top-3.5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="请输入你的昵称"
+              value={form.name}
+              onChange={(e) => handleChange("name", e.target.value)}
+              className={`${errors.name ? inputError : inputNormal} pl-9`}
+            />
           </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">学号 <span className="text-red-400">*</span></label>
-            <div className="relative">
-              <Hash size={16} className="absolute left-3 top-3.5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="请输入你的学号"
-                value={form.studentId}
-                onChange={(e) => handleChange("studentId", e.target.value)}
-                className={`${errors.studentId ? inputError : inputNormal} pl-9`}
-              />
-            </div>
-            {errors.studentId && <p className="text-red-400 text-xs mt-1">{errors.studentId}</p>}
-          </div>
+          {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
         </div>
 
         <div>

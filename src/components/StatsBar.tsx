@@ -8,11 +8,11 @@ interface StatsBarProps {
 
 const TEAM_QUOTAS: Record<string, number> = {
   "报名与人员管理组": 3,
-  "场地与入场管理组": 2,
-  "主持与流程设计组": 5,
-  "比赛与技术组": 2,
-  "评分与颁奖组": 3,
-  "宣传与记录组": 5,
+  "场地与入场管理组": 3,
+  "主持与流程设计组": 6,
+  "比赛与技术组": 3,
+  "评分与颁奖组": 4,
+  "宣传与记录组": 6,
 };
 
 const TEAM_COLORS: Record<string, string> = {

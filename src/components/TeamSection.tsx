@@ -29,7 +29,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ teamCounts = {} }) => {
     },
     {
       name: "场地与入场管理组",
-      quota: 2,
+      quota: 3,
       emoji: "🚪",
       color: "#7c3aed",
       description: "负责入场引导和场地秩序维护，确保活动顺利开始。",
@@ -46,7 +46,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ teamCounts = {} }) => {
     },
     {
       name: "主持与流程设计组",
-      quota: 5,
+      quota: 6,
       emoji: "🎙️",
       color: "#f59e0b",
       description: "负责活动流程设计、主持与节奏把控，是舞台表达的核心力量。",
@@ -65,7 +65,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ teamCounts = {} }) => {
     },
     {
       name: "比赛与技术组",
-      quota: 2,
+      quota: 3,
       emoji: "💻",
       color: "#10b981",
       description: "负责比赛运行与设备支持，保障每位选手都能稳定展示。",
@@ -82,7 +82,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ teamCounts = {} }) => {
     },
     {
       name: "评分与颁奖组",
-      quota: 3,
+      quota: 4,
       emoji: "🏅",
       color: "#ef4444",
       description: "负责评分统计与颁奖环节，确保结果公开、公平、可核验。",
@@ -99,7 +99,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ teamCounts = {} }) => {
     },
     {
       name: "宣传与记录组",
-      quota: 5,
+      quota: 6,
       emoji: "📸",
       color: "#ec4899",
       description: "负责活动传播与影像记录，沉淀内容素材并扩大活动影响力。",
